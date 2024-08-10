@@ -1,0 +1,20 @@
+// password.js
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+const { API_URL, KEY } = require('../controllers/config.js');
+const { AJAX } = require('../controllers/ajax.js');
+const mongoURI = 'mongodb://localhost:27017/passguard';
+
+const passwordSchema = new Schema({
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    start_date: { type: Date, required: true },
+    end_date: { type: Date, required: true },
+    generatedPassword: { type: String, required: true }, 
+	status: { type: String, enum: ['active', 'expired'], default: 'active'}
+});
+
+const Password = mongoose.model('Password', passwordSchema);
+
+module.exports = Password;
+;
