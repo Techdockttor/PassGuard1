@@ -5,14 +5,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const portfinder = require('portfinder');
-
 const User = require('./models/user'); // Import your User model
 const Password = require('./models/password'); // Import Mongoose model
 const db = require('./config/db'); // Import MongoDB connection
 const authRouter = require('./routes/auth'); // Example router file
 const passwordRouter = require('./routes/passwords');
-const config = require('./config');
-const { createNginxConfig, addDnsRecord } = require('./nginxConfig'); // Import the utility functions
+const config = require('./controllers/config');
+const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
+
 
 dotenv.config(); // Load environment variables from .env file
 
