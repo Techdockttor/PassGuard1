@@ -11,14 +11,14 @@ const Password = require('./models/password'); // Import Mongoose model
 const db = require('./config/db'); // Import MongoDB connection
 const authRouter = require('./routes/auth'); // Example router file
 const passwordRouter = require('./routes/passwords');
-const config = require('./controllers/config');
-const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
+const config = require('./config');
+const { createNginxConfig, addDnsRecord } = require('./nginxConfig'); // Import the utility functions
 
-dotenv.config();
+dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 
-// CORS
+// CORS configuration
 const corsOptions = {
   origin: process.env.CORS_ORIGIN || 'http://0.0.0.0:3000',
   credentials: true,
@@ -28,7 +28,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-// Middleware
+// Middleware setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, '../public')));
@@ -58,15 +58,24 @@ app.get('/sign-in', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/passwords', passwordRouter);
 
-// New route for creating Nginx config
+// Route for creating Nginx config and DNS record
 app.post('/create-nginx-config', (req, res) => {
-  const { domain, publicFolder } = req.body;
+  const { domain, publicFolder, zoneId, recordId, ip } = req.body;
 
+  // Create Nginx config
   createNginxConfig(domain, publicFolder, (error, message) => {
     if (error) {
       return res.status(500).json({ error });
     }
-    res.status(200).json({ message });
+
+    // Add DNS record
+    addDnsRecord(zoneId, recordId, domain, ip, (err, dnsMessage) => {
+      if (err) {
+        return res.status(500).json({ error: err });
+      }
+
+      res.status(200).json({ message: `${message}. ${dnsMessage}` });
+    });
   });
 });
 
@@ -88,8 +97,15 @@ portfinder.getPort({ port: process.env.PASSGUARD_PORT || 3000 }, (err, port) => 
   });
 });
 
-// Connect to MongoDB
-const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/passguarddb';
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB connected successfully'))
-  .catch(err => console.log('MongoDB connection error:', err));
+// Connect to MongoDB using API keys from environment variables
+const mongoURI = `mongodb+srv://${process.env.MONGO_PUBLIC_KEY}:${process.env.MONGO_PRIVATE_KEY}@<cluster-url>/passguarddb?retryWrites=true&w=majority`;
+mongoose.connect(mongoURI, {
+  useNewUrlParser: true,        // Use the new MongoDB connection string parser
+  useUnifiedTopology: true      // Use the new server discovery and monitoring engine
+})
+  .then(() => {
+    console.log('MongoDB connected successfully');
+  })
+  .catch(err => {
+    console.log('MongoDB connection error:', err);
+  });

@@ -6,14 +6,14 @@ const templateContent = `##
 # Redirect to www
 ##
 server {
-    listen 443 ssl;
+    listen 443 ssl http2;
     listen 80;
     server_name {{DOMAIN}};
 
     ssl_certificate /etc/nginx/ssl/{{DOMAIN}}/fullchain.pem;
     ssl_certificate_key /etc/nginx/ssl/{{DOMAIN}}/privkey.pem;
 
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
     ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
 
@@ -21,20 +21,23 @@ server {
 }
 
 server {    
-    listen 443 ssl;
+    listen 443 ssl http2;
     listen 80;
 
     root /var/www/{{DOMAIN}}/{{PUBLIC_FOLDER}};
     index index.php index.html index.htm;
     add_header X-Frame-Options DENY;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
     
     # Make site accessible from http://localhost/
     server_name www.{{DOMAIN}};
 
     ssl_certificate /etc/nginx/ssl/{{DOMAIN}}/fullchain.pem;
     ssl_certificate_key /etc/nginx/ssl/{{DOMAIN}}/privkey.pem;
+    ssl_dhparam /etc/nginx/ssl/dhparam.pem;
 
-    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_protocols TLSv1.2 TLSv1.3;
     ssl_prefer_server_ciphers on;
     ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
 
@@ -68,7 +71,7 @@ function createNginxConfig(domain, publicFolder, callback) {
             return;
         }
 
-        exec(`sudo cp ${configPath} /etc/nginx/sites-available/${domain} && sudo ln -s /etc/nginx/sites-available/${domain} /etc/nginx/sites-enabled/`, (error, stdout, stderr) => {
+        exec(`sudo cp ${configPath} /etc/nginx/sites-available/${domain} && sudo ln -s /etc/nginx/sites-available/${domain} /etc/nginx/sites-enabled/ && sudo nginx -t && sudo systemctl reload nginx`, (error, stdout, stderr) => {
             if (error) {
                 callback(`Error: ${error.message}`);
                 return;
@@ -82,4 +85,29 @@ function createNginxConfig(domain, publicFolder, callback) {
     });
 }
 
-module.exports = { createNginxConfig };
+function addDnsRecord(zoneId, recordId, domain, ip, callback) {
+    const dnsRecordContent = `
+Zone ID: ${zoneId}
+Record ID: ${recordId}
+Name: ${domain}
+Class: IN
+Type: A
+Status: Active
+Value: ${ip}
+TTL: 28800
+Creation Date: ${new Date().toISOString()}
+`;
+
+    const dnsConfigPath = path.join(__dirname, `${domain}_dns_record.txt`);
+
+    fs.writeFile(dnsConfigPath, dnsRecordContent, 'utf8', (err) => {
+        if (err) {
+            callback(`Error writing DNS record file: ${err.message}`);
+            return;
+        }
+
+        callback(null, `DNS record for ${domain} saved to ${dnsConfigPath}`);
+    });
+}
+
+module.exports = { createNginxConfig, addDnsRecord };
