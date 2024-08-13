@@ -1,3 +1,4 @@
+// src/app.js
 const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
@@ -12,7 +13,6 @@ const authRouter = require('./routes/auth'); // Example router file
 const passwordRouter = require('./routes/passwords');
 const config = require('./controllers/config');
 const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
-
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -96,16 +96,3 @@ portfinder.getPort({ port: process.env.PASSGUARD_PORT || 3000 }, (err, port) => 
     console.log('Starting server...');
   });
 });
-
-// Connect to MongoDB using API keys from environment variables
-const mongoURI = `mongodb+srv://${process.env.MONGO_PUBLIC_KEY}:${process.env.MONGO_PRIVATE_KEY}@<cluster-url>/passguarddb?retryWrites=true&w=majority`;
-mongoose.connect(mongoURI, {
-  useNewUrlParser: true,        // Use the new MongoDB connection string parser
-  useUnifiedTopology: true      // Use the new server discovery and monitoring engine
-})
-  .then(() => {
-    console.log('MongoDB connected successfully');
-  })
-  .catch(err => {
-    console.log('MongoDB connection error:', err);
-  });
