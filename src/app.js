@@ -1,11 +1,9 @@
-// src/app.js
 const path = require('path');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
-const portfinder = require('portfinder');
 const User = require('./models/user'); // Import your User model
 const Password = require('./models/password'); // Import Mongoose model
 const db = require('./config/db'); // Import MongoDB connection
@@ -20,7 +18,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 'http://0.0.0.0:3000',
+  origin: process.env.CORS_ORIGIN || 'http://127.0.0.1:4000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
@@ -79,20 +77,12 @@ app.post('/create-nginx-config', (req, res) => {
   });
 });
 
-// Get host and debug mode from environment variables or use defaults
-const host = process.env.PASSGUARD_HOST || '0.0.0.0';
-const debug = process.env.PASSGUARD_DEBUG ? process.env.PASSGUARD_DEBUG.toLowerCase() === 'true' : true;
+// Update host and port
+const host = '127.0.0.1';
+const port = 4000;
 
-// Find an available port using portfinder
-portfinder.getPort({ port: process.env.PASSGUARD_PORT || 3000 }, (err, port) => {
-  if (err) {
-    console.error('Error finding available port:', err);
-    process.exit(1);
-  }
-
-  // Start the Express app
-  app.listen(port, host, () => {
-    console.log(`Server is running on http://${host}:${port} (Press CTRL+C to quit)`);
-    console.log('Starting server...');
-  });
+// Start the Express app
+app.listen(port, host, () => {
+  console.log(`Server is running on http://${host}:${port} (Press CTRL+C to quit)`);
+  console.log('Starting server...');
 });

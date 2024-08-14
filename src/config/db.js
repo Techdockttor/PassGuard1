@@ -9,8 +9,8 @@ mongoose.set('debug', true);
 
 // Function to retrieve MongoDB URI from environment variables or use default
 function getMongoURI() {
-  const defaultURI = 'mongodb://localhost:27017/passguarddb';
-  return process.env.MONGODB_URI || defaultURI;
+  const mongoURI = 'mongodb+srv://melusimedia:y%40Milnerton@cluster0.bflebzg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+  return mongoURI;
 }
 
 // Usage example:
