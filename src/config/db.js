@@ -9,7 +9,7 @@ mongoose.set('debug', true);
 
 // Function to retrieve MongoDB URI from environment variables or use default
 function getMongoURI() {
-  const mongoURI = 'mongodb+srv://melusimedia:y%40Milnerton@cluster0.bflebzg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+  const mongoURI = process.env.MONGO_URI;
   return mongoURI;
 }
 

@@ -5,12 +5,11 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const User = require('./models/user'); // Import your User model
-const Password = require('./models/password'); // Import Mongoose model
 const db = require('./config/db'); // Import MongoDB connection
 const authRouter = require('./routes/auth'); // Example router file
-const passwordRouter = require('./routes/passwords');
 const config = require('./controllers/config');
-const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
+const router = require('./routes');
+//const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -55,34 +54,34 @@ app.get('/sign-in', (req, res) => {
 // API Routes
 app.use('/api/auth', authRouter);
 app.use('/api/passwords', passwordRouter);
+app.use('/api/',router);
 
 // Route for creating Nginx config and DNS record
-app.post('/create-nginx-config', (req, res) => {
-  const { domain, publicFolder, zoneId, recordId, ip } = req.body;
+//app.post('/create-nginx-config', (req, res) => {
+  //const { domain, publicFolder, zoneId, recordId, ip } = req.body;
 
   // Create Nginx config
-  createNginxConfig(domain, publicFolder, (error, message) => {
-    if (error) {
-      return res.status(500).json({ error });
-    }
+  //createNginxConfig(domain, publicFolder, (error, message) => {
+    //if (error) {
+      //return res.status(500).json({ error });
+    //}
 
     // Add DNS record
-    addDnsRecord(zoneId, recordId, domain, ip, (err, dnsMessage) => {
-      if (err) {
-        return res.status(500).json({ error: err });
-      }
+    //addDnsRecord(zoneId, recordId, domain, ip, (err, dnsMessage) => {
+      //if (err) {
+        //return res.status(500).json({ error: err });
+      //}
 
-      res.status(200).json({ message: `${message}. ${dnsMessage}` });
-    });
-  });
-});
+      //res.status(200).json({ message: `${message}. ${dnsMessage}` });
+    //});
+  //});
 
 // Update host and port
-const host = '127.0.0.1';
-const port = 4000;
+//const host = '127.0.0.1';
+const port = 4000 || process.env.port;
 
 // Start the Express app
-app.listen(port, host, () => {
-  console.log(`Server is running on http://${host}:${port} (Press CTRL+C to quit)`);
-  console.log('Starting server...');
+app.listen(port, () => {
+  console.log(`Server is running on http://${port} (Press CTRL+C to quit)`);
+  console.log('Starting server...'+port);
 });
