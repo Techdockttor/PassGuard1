@@ -9,7 +9,7 @@ const db = require('./config/db'); // Import MongoDB connection
 const authRouter = require('./routes/auth'); // Example router file
 const config = require('./controllers/config');
 const router = require('./routes');
-//const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
+const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
 
 dotenv.config(); // Load environment variables from .env file
 
