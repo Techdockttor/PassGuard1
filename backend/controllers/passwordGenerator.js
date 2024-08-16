@@ -1,23 +1,11 @@
-const readline = require('readline');
-const db = require('../config/db'); // Import database connection
 const Password = require('../models/password'); // Import Mongoose model
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 const numbers = '0123456789'.split('');
 const symbols = '!@£%^&*+#'.split('');
 
-const rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
-
-const askQuestion = (query) => new Promise((resolve) => rl.question(query, resolve));
-
-async function generatePassword() {
-  const noLetters = parseInt(await askQuestion("How many letters do you want in your password?\n"), 10);
-  const noNumbers = parseInt(await askQuestion("How many numbers do you want in your password?\n"), 10);
-  const noSymbols = parseInt(await askQuestion("How many symbols do you want in your password?\n"), 10);
-
+// Function to generate a password
+function generatePassword(noLetters, noNumbers, noSymbols) {
   let passwordList = [];
 
   for (let i = 0; i < noLetters; i++) {
@@ -38,16 +26,20 @@ async function generatePassword() {
     [passwordList[i], passwordList[j]] = [passwordList[j], passwordList[i]];
   }
 
-  const generatedPassword = passwordList.join('');
-  console.log("Your Password is: " + generatedPassword);
-
-  return generatedPassword; // Return generated password
+  return passwordList.join(''); // Return generated password
 }
 
-async function savePasswordToDatabase() {
+// Controller function to save generated password to the database
+async function savePasswordToDatabase(req, res) {
+  const { title, description, noLetters, noNumbers, noSymbols } = req.body;
+
   try {
-    const { title, description, start_date, end_date } = await promptPasswordDetails(); // Prompt for password details
-    const generatedPassword = await generatePassword(); // Generate password
+    // Generate password
+    const generatedPassword = generatePassword(noLetters, noNumbers, noSymbols);
+
+    // Set start and end dates
+    const start_date = new Date();
+    const end_date = new Date(start_date.getTime() + 30 * 24 * 60 * 60 * 1000); // Set end date to 30 days from start date
 
     // Save password to MongoDB using Mongoose
     const newPassword = new Password({
@@ -55,25 +47,14 @@ async function savePasswordToDatabase() {
       description,
       start_date,
       end_date,
-      generatedPassword,
+      password: generatedPassword, // Save the generated password
     });
 
     await newPassword.save();
-    console.log('Password saved to database:', newPassword);
+    res.status(201).json({ message: 'Password saved to database', data: newPassword });
   } catch (error) {
-    console.error('Error generating or saving password:', error);
-  } finally {
-    rl.close(); // Close readline interface
+    res.status(500).json({ message: 'Error generating or saving password', error });
   }
-}
-
-async function promptPasswordDetails() {
-  const title = await askQuestion("Enter the title of the password:\n");
-  const description = await askQuestion("Enter the description of the password:\n");
-  const start_date = new Date();
-  const end_date = new Date(start_date.getTime() + 30 * 24 * 60 * 60 * 1000); // Set end date to 30 days from start date
-
-  return { title, description, start_date, end_date };
 }
 
 module.exports = {

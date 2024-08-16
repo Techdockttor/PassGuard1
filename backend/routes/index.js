@@ -13,7 +13,7 @@ const passwordCreateController = require('../controller/passwords/createPassword
 const passwordGetAllController = require('../controller/passwords/getAllPasswords');
 const passwordDeleteController = require('../controller/passwords/deletePassword');
 const passwordUpdateStatusController = require('../controller/passwords/updatePasswordStatus');
-const passwordGenerateController = require('../controller/passwords/generatePassword');
+const { savePasswordToDatabase } = require('../controller/passwords/passwordsGenerator'); // Import savePasswordToDatabase
 
 // Middleware
 const authToken = require('../middleware/authToken');
@@ -33,6 +33,6 @@ router.post("/passwords", authToken, passwordCreateController);
 router.get("/passwords", authToken, passwordGetAllController);
 router.delete("/passwords/:id", authToken, passwordDeleteController);
 router.put("/passwords/:id/status", authToken, passwordUpdateStatusController);
-router.get("/passwords/generate", authToken, passwordGenerateController);
+router.post("/passwords/generate", authToken, savePasswordToDatabase); // New route for saving generated passwords
 
 module.exports = router;

@@ -1,17 +1,14 @@
 const path = require('path');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const express = require('express');
-const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
-const User = require('./models/user'); // Import your User model
-const db = require('./config/db'); // Import MongoDB connection
-const authRouter = require('./routes/auth'); // Example router file
-const config = require('./controllers/config');
-const router = require('./routes');
-const { createNginxConfig } = require('./config/nginxConfig'); // Import the utility function
+const connectDB = require('./config/db'); // Import MongoDB connection
+const authRouter = require('./routes/auth'); // Import your auth routes
+const passwordRouter = require('./routes/passwords'); // Import password routes
+const router = require('./routes'); // Import other routes
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config(); // Load environment variables
 
 const app = express();
 
@@ -24,13 +21,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.use(express.json()); // Parse JSON requests
+app.use(cookieParser()); // Parse cookies
+app.use(express.static(path.join(__dirname, '../public'))); // Serve static files
 
-// Middleware setup
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, '../public')));
-
-// Browser Page Routes
+// Main Browser Page Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'landing.html'));
 });
@@ -52,36 +47,18 @@ app.get('/sign-in', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', authRouter);
-app.use('/api/passwords', passwordRouter);
-app.use('/api/',router);
+app.use('/api/auth', authRouter); // Authentication-related routes
+app.use('/api/passwords', passwordRouter); // Password management routes
+app.use('/api', router); // Other API routes
 
-// Route for creating Nginx config and DNS record
-//app.post('/create-nginx-config', (req, res) => {
-  //const { domain, publicFolder, zoneId, recordId, ip } = req.body;
-
-  // Create Nginx config
-  //createNginxConfig(domain, publicFolder, (error, message) => {
-    //if (error) {
-      //return res.status(500).json({ error });
-    //}
-
-    // Add DNS record
-    //addDnsRecord(zoneId, recordId, domain, ip, (err, dnsMessage) => {
-      //if (err) {
-        //return res.status(500).json({ error: err });
-      //}
-
-      //res.status(200).json({ message: `${message}. ${dnsMessage}` });
-    //});
-  //});
-
-// Update host and port
-//const host = '127.0.0.1';
-const port = 4000 || process.env.port;
-
-// Start the Express app
-app.listen(port, () => {
-  console.log(`Server is running on http://${port} (Press CTRL+C to quit)`);
-  console.log('Starting server...'+port);
+// Connect to the Database and Start the Server
+const PORT = process.env.PORT || 4000;
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Connected to the database`);
+    console.log(`Server is running on port ${PORT}`);
+  });
+}).catch(err => {
+  console.error('Failed to start server:', err);
+  process.exit(1); // Exit Failure
 });
