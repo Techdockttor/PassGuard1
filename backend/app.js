@@ -1,15 +1,18 @@
+// src/app.js
 const path = require('path');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const express = require('express');
-const cookieParser = require('cookie-parser');
-const dotenv = require('dotenv');
-const connectDB = require('./config/db'); // Import MongoDB connection
 const User = require('./models/user'); // Import your User model
 const Password = require('./models/password'); // Import your Password model
-const generatePassword = require('./passwordGenerator');
-const authRouter = require('./routes/auth'); // Import your auth routes
-const passwordRouter = require('./routes/passwords'); // Import password routes
-const apiRoutes = require('./routes'); // Import your routes
+const authRouter = require('./routes/auth'); // Example router file
+const passwordRouter = require('./routes/passwords');
+const db = require('./config/db'); // Import MongoDB connection
+const App = require('express');
+const generatePassword = require('./controllers/passwordGenerator');
+const config = require('./controllers/config');
+const cookieParser = require('cookie-parser');
+const dotenv = require('dotenv');
 
 dotenv.config(); // Load environment variables
 
@@ -52,7 +55,7 @@ app.get('/sign-in', (req, res) => {
 // API Routes
 app.use('/api/auth', authRouter); // Authentication-related routes
 app.use('/api/passwords', passwordRouter); // Password management routes
-app.use('/api', apiRoutes); // Mount the API routes at the /api path
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
