@@ -22,10 +22,8 @@ async function connectDB() {
 
   try {
     await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
+      useNewUrlParser: true, // Parses MongoDB connection string properly
       useUnifiedTopology: true, // Unified topology for better server discovery and monitoring
-      useCreateIndex: true, // Automatically create indexes (if needed)
-      useFindAndModify: false // Opt-out of deprecated findAndModify()
     });
     console.log('Connected to MongoDB');
   } catch (err) {

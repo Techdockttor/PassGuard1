@@ -1,67 +1,26 @@
-// src/routes/passwords.js
+// backend/routes/passwords.js
 const express = require('express');
+const createPassword = require('../controllers/passwords/createPassword');
+const getAllPasswords = require('../controllers/passwords/getAllPasswords');
+const deletePassword = require('../controllers/passwords/deletePassword');
+const updatePasswordStatus = require('../controllers/passwords/updatePasswordStatus');
+const { savePasswordToDatabase } = require('../controllers/passwords/passwordGenerator');
+
 const router = express.Router();
-const Password = require('../models/password');
-const generatePassword = require('../controllers/passwordGenerator');
 
-// Create a new password
-router.post('/', async (req, res) => {
-  try {
-    const { password, expiresAt } = req.body;
-    const newPassword = await Password.create({ password, expiresAt });
-    res.status(201).json(newPassword);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
+// Route to create a password
+router.post('/create', createPassword);
 
-// Get all passwords
-router.get('/', async (req, res) => {
-  try {
-    const passwords = await Password.find();
-    res.json(passwords);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// Route to get all passwords
+router.get('/', getAllPasswords);
 
-// Delete a password
-router.delete('/:id', async (req, res) => {
-  try {
-    const { id } = req.params;
-    await Password.findByIdAndDelete(id);
-    res.json({ message: 'Password deleted successfully' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// Route to delete a password
+router.delete('/:id', deletePassword);
 
-// Update password status
-router.put('/:id/status', async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { status } = req.body;
-    const password = await Password.findById(id);
-    if (!password) {
-      return res.status(404).json({ message: 'Password not found' });
-    }
-    password.status = status;
-    await password.save();
-    res.json(password);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
+// Route to update password status
+router.put('/:id/status', updatePasswordStatus);
 
-// Route to generate a new password
-router.get('/generate', async (req, res) => {
-  try {
-      const password = await generatePassword();
-      res.status(200).json({ password });
-  } catch (error) {
-      console.error('Error generating password:', error);
-      res.status(500).json({ error: 'Failed to generate password' });
-  }
-});
+// Route to generate and save a password
+router.post('/generate', savePasswordToDatabase);
 
 module.exports = router;

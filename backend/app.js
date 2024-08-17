@@ -1,18 +1,15 @@
-// src/app.js
+// backend/app.js
 const path = require('path');
 const cors = require('cors');
-const mongoose = require('mongoose');
 const express = require('express');
-const User = require('./models/user'); // Import your User model
-const Password = require('./models/password'); // Import your Password model
-const authRouter = require('./routes/auth'); // Example router file
-const passwordRouter = require('./routes/passwords');
-const db = require('./config/db'); // Import MongoDB connection
-const App = require('express');
-const generatePassword = require('./controllers/passwordGenerator');
-const config = require('./controllers/config');
+const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+
+const connectDB = require('./config/db'); // MongoDB connection
+const authRouter = require('./routes/auth'); // Authentication routes
+const userRouter = require('./routes/user'); // User routes
+const passwordRouter = require('./routes/passwords'); // Password management routes
 
 dotenv.config(); // Load environment variables
 
@@ -54,8 +51,8 @@ app.get('/sign-in', (req, res) => {
 
 // API Routes
 app.use('/api/auth', authRouter); // Authentication-related routes
+app.use('/api/user', userRouter); // User management routes
 app.use('/api/passwords', passwordRouter); // Password management routes
-
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -65,27 +62,15 @@ app.use((err, req, res, next) => {
 
 // Connect to the Database and Start the Server
 const PORT = process.env.PORT || 4000;
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Connected to the database`);
-    console.log(`Server is running on port ${PORT}`);
-  });
-}).catch(err => {
-  console.error('Failed to start server:', err);
-  process.exit(1); // Exit Failure
-});
 
-// Test DB
-app.get('/test-db', async (req, res) => {
-  try {
-    const connectionState = mongoose.connection.readyState; // 1 = connected, 0 = disconnected
-    if (connectionState === 1) {
-      return res.status(200).json({ message: 'Database connected successfully' });
-    } else {
-      return res.status(500).json({ message: 'Database not connected' });
-    }
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ message: 'Error checking database connection' });
-  }
-});
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Connected to the database`);
+      console.log(`Server is running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error('Failed to start server:', err);
+    process.exit(1); // Exit Failure
+  });
