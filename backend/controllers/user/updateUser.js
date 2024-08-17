@@ -1,5 +1,5 @@
 // backend/controllers/user/updateUser.js
-const User = require('../../models/User'); // Import User model
+const User = require('../../models/user'); // Import User model
 const bcrypt = require('bcrypt');
 
 const updateUser = async (req, res) => {

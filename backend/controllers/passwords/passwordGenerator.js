@@ -1,5 +1,5 @@
 // backend/controllers/passwords/passwordGenerator.js
-const Password = require('../../models/Password'); // Import Mongoose model
+const Password = require('../../models/password'); // Import Mongoose model
 
 const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'.split('');
 const numbers = '0123456789'.split('');

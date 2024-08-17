@@ -1,5 +1,5 @@
 // backend/controllers/passwords/getAllPasswords.js
-const Password = require('../../models/Password');
+const Password = require('../../models/password');
 
 const getAllPasswords = async (req, res) => {
   try {

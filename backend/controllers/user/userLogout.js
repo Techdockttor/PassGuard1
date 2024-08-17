@@ -1,5 +1,5 @@
 // backend/controllers/user/userLogout.js
-const User = require('../../models/User'); // Import User model
+const User = require('../../models/user'); // Import User model
 
 const userLogout = async (req, res) => {
   const { id } = req.user; // Assuming req.user is set after authentication

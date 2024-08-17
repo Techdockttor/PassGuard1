@@ -1,5 +1,5 @@
 // backend/controllers/user/userDetails.js
-const User = require('../../models/User'); // Import User model
+const User = require('../../models/user'); // Import User model
 
 const userDetails = async (req, res) => {
   const { id } = req.params;

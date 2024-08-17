@@ -1,5 +1,5 @@
 // backend/controllers/passwords/updatePasswordStatus.js
-const Password = require('../../models/Password');
+const Password = require('../../models/password');
 
 const updatePasswordStatus = async (req, res) => {
   const { id } = req.params;

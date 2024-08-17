@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const path = require('path');
 
 // Resolve the path to the User model
-const userModelPath = path.resolve(__dirname, '../../models/User');
+const userModelPath = path.resolve(__dirname, '../../models/user');
 console.log("Resolved User model path:", userModelPath);
 
 // Import the User model using the resolved path

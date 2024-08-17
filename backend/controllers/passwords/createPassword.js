@@ -1,5 +1,5 @@
 // backend/controllers/passwords/createPassword.js
-const Password = require('../../models/Password');
+const Password = require('../../models/password');
 const { generatePassword } = require('../passwordGenerator'); // Import password generation logic
 
 const createPassword = async (req, res) => {

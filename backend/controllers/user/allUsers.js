@@ -1,5 +1,5 @@
 // backend/controllers/user/allUsers.js
-const User = require('../../models/User'); // Import User model
+const User = require('../../models/user'); // Import User model
 
 const allUsers = async (req, res) => {
   try {
