@@ -1,17 +1,16 @@
-// src/models/User.js
+// backend/models/User.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoURI = 'mongodb://localhost:27017/passguard';
-const { API_URL, KEY } = require('../controllers/config.js');
-const { AJAX } = require('../controllers/ajax.js');
 
+// Define the User schema
 const userSchema = new Schema({
     username: { type: String, required: true, unique: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true }, // Added unique constraint for email
     password: { type: String, required: true },
     token: { type: String, default: null }
 });
 
+// Create the User model
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

@@ -6,7 +6,7 @@ const dotenv = require('dotenv');
 const connectDB = require('./config/db'); // Import MongoDB connection
 const authRouter = require('./routes/auth'); // Import your auth routes
 const passwordRouter = require('./routes/passwords'); // Import password routes
-const router = require('./routes'); // Import other routes
+const apiRoutes = require('./routes'); // Import your routes
 
 dotenv.config(); // Load environment variables
 
@@ -49,7 +49,13 @@ app.get('/sign-in', (req, res) => {
 // API Routes
 app.use('/api/auth', authRouter); // Authentication-related routes
 app.use('/api/passwords', passwordRouter); // Password management routes
-app.use('/api', router); // Other API routes
+app.use('/api', apiRoutes); // Mount the API routes at the /api path
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Internal Server Error' });
+});
 
 // Connect to the Database and Start the Server
 const PORT = process.env.PORT || 4000;
@@ -61,4 +67,19 @@ connectDB().then(() => {
 }).catch(err => {
   console.error('Failed to start server:', err);
   process.exit(1); // Exit Failure
+});
+
+// Test DB
+app.get('/test-db', async (req, res) => {
+  try {
+    const connectionState = mongoose.connection.readyState; // 1 = connected, 0 = disconnected
+    if (connectionState === 1) {
+      return res.status(200).json({ message: 'Database connected successfully' });
+    } else {
+      return res.status(500).json({ message: 'Database not connected' });
+    }
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: 'Error checking database connection' });
+  }
 });
