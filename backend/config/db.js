@@ -11,7 +11,8 @@ if (process.env.NODE_ENV === 'development') {
 
 // Function to get Mongo URI from .env or fallback
 function getMongoURI() {
-  const mongoURI = process.env.MONGO_URI || 'mongodb://localhost:27017/passguarddb';
+  const mongoURI = process.env.MONGO_URI;
+  console.log('MongoURI:', mongoURI);
   return mongoURI;
 }
 
