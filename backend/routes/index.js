@@ -1,39 +1,26 @@
 const express = require('express');
+const asyncHandler = require('express-async-handler');
+const { authToken } = require('../middleware/authMiddleware'); // Assuming you have an authentication middleware
+const userController = require('../controllers/userController');
+const passwordController = require('../controllers/passwordController');
+
 const router = express.Router();
-const asyncHandler = require('../utils/asyncHandler'); // Import asyncHandler
 
-// Controllers
-const userSignUpController = require("../controllers/user/userSignUp");
-const userSignInController = require('../controllers/user/userSignIn');
-const userDetailsController = require('../controllers/user/userDetails');
-const userLogout = require('../controllers/user/userLogout');
-const allUsers = require('../controller/users/allUsers');
-const updateUser = require('../controller/users/updateUser');
+// User Authentication Routes
+router.post('/signup', asyncHandler(userController.signup));
+router.post('/signin', asyncHandler(userController.signin));
+router.get('/user-details', authToken, asyncHandler(userController.getUserDetails));
+router.get('/userLogout', authToken, asyncHandler(userController.logout));
 
-const passwordCreateController = require('../controllers/passwords/createPassword');
-const passwordGetAllController = require('../controllers/passwords/getAllPasswords');
-const passwordDeleteController = require('../controllers/passwords/deletePassword');
-const passwordUpdateStatusController = require('../controllers/passwords/updatePasswordStatus');
-const { savePasswordToDatabase } = require('../controllers/passwords/passwordsGenerator'); // Import savePasswordToDatabase
+// Admin Panel - User Management
+router.get('/all-user', authToken, asyncHandler(userController.getAllUsers));
+router.post('/update-user', authToken, asyncHandler(userController.updateUser));
 
-// Middleware
-const authToken = require('../middleware/authToken');
-
-// API 0: User Authentication and Management
-router.post("/signup", asyncHandler(userSignUpController));
-router.post("/signin", asyncHandler(userSignInController));
-router.get("/user-details", authToken, asyncHandler(userDetailsController));
-router.get("/userLogout", asyncHandler(userLogout));
-
-// API 1: Admin Panel - User Management
-router.get("/all-user", authToken, asyncHandler(allUsers));
-router.post("/update-user", authToken, asyncHandler(updateUser));
-
-// API 2: Password Management
-router.post("/passwords", authToken, asyncHandler(passwordCreateController));
-router.get("/passwords", authToken, asyncHandler(passwordGetAllController));
-router.delete("/passwords/:id", authToken, asyncHandler(passwordDeleteController));
-router.put("/passwords/:id/status", authToken, asyncHandler(passwordUpdateStatusController));
-router.post("/passwords/generate", authToken, asyncHandler(savePasswordToDatabase)); // New route for saving generated passwords
+// Password Management Routes
+router.post('/passwords', authToken, asyncHandler(passwordController.createPassword));
+router.get('/passwords', authToken, asyncHandler(passwordController.getAllPasswords));
+router.delete('/passwords/:id', authToken, asyncHandler(passwordController.deletePasswordById));
+router.put('/passwords/:id/status', authToken, asyncHandler(passwordController.updatePasswordStatus));
+router.post('/passwords/generate', authToken, asyncHandler(passwordController.generateAndSavePassword));
 
 module.exports = router;
