@@ -1,23 +1,59 @@
+// backend/app.js
+const path = require('path');
+const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
+const User = require('./models/user'); // Import your User model
+const Password = require('./models/password'); // Import Mongoose model
 const connectDB = require('./config/db'); // MongoDB connection
+const authRouter = require('./routes/auth'); // Authentication routes
+const userRouter = require('./routes/user'); // User routes
+const passwordRouter = require('./routes/passwords'); // Password management routes
 
 dotenv.config(); // Load environment variables
 
 const app = express();
 
-// Middleware setup
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
+// CORS configuration
+const corsOptions = {
+  origin: process.env.CORS_ORIGIN || 4000,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
+};
 
-// Test route
+app.use(cors(corsOptions));
+app.use(express.json()); // Parse JSON requests
+app.use(cookieParser()); // Parse cookies
+app.use(express.static(path.join(__dirname, '../public'))); // Serve static files
+
+// Main Browser Page Routes
 app.get('/', (req, res) => {
-  res.send('API is running...');
+  res.sendFile(path.join(__dirname, 'landing.html'));
 });
+
+app.get('/profile', (req, res) => {
+  res.sendFile(path.join(__dirname, 'profile.html'));
+});
+
+app.get('/password', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Password.html'));
+});
+
+app.get('/sign-up', (req, res) => {
+  res.sendFile(path.join(__dirname, 'Sign-up.html'));
+});
+
+app.get('/sign-in', (req, res) => {
+  res.sendFile(path.join(__dirname, 'sign-in.html'));
+});
+
+// API Routes
+app.use('/api/auth', authRouter); // Authentication-related routes
+app.use('/api/user', userRouter); // User management routes
+app.use('/api/passwords', passwordRouter); // Password management routes
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -37,5 +73,5 @@ connectDB()
   })
   .catch((err) => {
     console.error('Failed to start server:', err);
-    process.exit(1); // Exit on failure
+    process.exit(1); // Exit Failure
   });
