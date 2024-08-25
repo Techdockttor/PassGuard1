@@ -1,4 +1,3 @@
-// backend/app.js
 const path = require('path');
 const cors = require('cors');
 const express = require('express');
@@ -18,7 +17,7 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || 4000,
+  origin: process.env.CORS_ORIGIN || 'http://localhost:4000',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Credentials'],
@@ -31,23 +30,23 @@ app.use(express.static(path.join(__dirname, '../public'))); // Serve static file
 
 // Main Browser Page Routes
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'landing.html'));
+  res.sendFile(path.join(__dirname, '../public/landing.html'));
 });
 
 app.get('/profile', (req, res) => {
-  res.sendFile(path.join(__dirname, 'profile.html'));
+  res.sendFile(path.join(__dirname, '../public/profile.html'));
 });
 
 app.get('/password', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Password.html'));
+  res.sendFile(path.join(__dirname, '../public/Password.html'));
 });
 
 app.get('/sign-up', (req, res) => {
-  res.sendFile(path.join(__dirname, 'Sign-up.html'));
+  res.sendFile(path.join(__dirname, '../public/Sign-up.html'));
 });
 
 app.get('/sign-in', (req, res) => {
-  res.sendFile(path.join(__dirname, 'sign-in.html'));
+  res.sendFile(path.join(__dirname, '../public/sign-in.html'));
 });
 
 // API Routes
@@ -75,3 +74,5 @@ connectDB()
     console.error('Failed to start server:', err);
     process.exit(1); // Exit Failure
   });
+
+module.exports = app; // App for testing purposes
