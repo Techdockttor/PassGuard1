@@ -1,7 +1,7 @@
 // password.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoURI = 'mongodb+srv://melusimedia:y%40Milnerton@cluster1.bflebzg.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
+const mongoURI = 'mongodb+srv://melusimedia:3nlHE6xqU0CZ7Ia9@passguardcluster.x33vxct.mongodb.net/?retryWrites=true&w=majority&appName=PassGuardCluster';
 
 const passwordSchema = new Schema({
     title: { type: String, required: true },
