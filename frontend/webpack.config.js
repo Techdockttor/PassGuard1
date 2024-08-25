@@ -3,7 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.js', // Entry point for your application
+  entry: './src/scripts.js', // Entry point for your application
   output: {
     filename: 'bundle.js', // The name of the bundled file
     path: path.resolve(__dirname, 'dist'), // The output directory for the bundled files
@@ -28,7 +28,7 @@ module.exports = {
         test: /\.(png|svg|jpg|jpeg|gif)$/i, // Apply this rule to image files
         type: 'asset/resource', // Treat images as assets
         generator: {
-          filename: 'assets/[name][ext]', // Output path for images
+          filename: 'images/[name][ext]', // Output path for images
         },
       },
     ],
@@ -36,8 +36,8 @@ module.exports = {
   plugins: [
     new CleanWebpackPlugin(), // Clean the output directory before each build
     new HtmlWebpackPlugin({
-      template: './src/index.html', // Template for generating the HTML file
-      filename: 'index.html', // Name of the output HTML file
+      template: './src/landing.html', // Template for generating the HTML file
+      filename: 'landing.html', // Name of the output HTML file
     }),
   ],
   devServer: {
