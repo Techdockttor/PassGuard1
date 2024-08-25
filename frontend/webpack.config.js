@@ -39,6 +39,22 @@ module.exports = {
       template: './src/landing.html', // Template for generating the HTML file
       filename: 'landing.html', // Name of the output HTML file
     }),
+    new HtmlWebpackPlugin({
+      template: './src/profile.html', // Template for generating the HTML file
+      filename: 'profile.html', // Name of the output HTML file
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/Password.html', // Template for generating the HTML file
+      filename: 'Password.html', // Name of the output HTML file
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/sign-in.html', // Template for generating the HTML file
+      filename: 'sign-in.html', // Name of the output HTML file
+    }),
+    new HtmlWebpackPlugin({
+      template: './src/Sign-up.html', // Template for generating the HTML file
+      filename: 'Sign-up.html', // Name of the output HTML file
+    }),
   ],
   devServer: {
     static: path.join(__dirname, 'dist'), // Serve files from the dist directory
