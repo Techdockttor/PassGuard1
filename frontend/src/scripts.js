@@ -175,7 +175,7 @@ async function fetchPasswords() {
     } catch (error) {
         console.error('Error fetching passwords:', error);
     }
-}
+};
 
 // Function to handle password change
 function handleChangePassword(event) {
@@ -187,7 +187,8 @@ function handleChangePassword(event) {
 
     if (newPassword !== confirmPassword) {
         alert('Passwords do not match!');
-        return;}
+        return;
+    }
 
     AJAX('/api/change-password', { email, newPassword }, 'POST')
         .then(response => {
@@ -202,7 +203,8 @@ function handleChangePassword(event) {
             console.error('Error:', error);
             alert('An error occurred while changing the password.');
         });
-    
+}
+
 // Function to attach delete event listeners
 function attachDeleteEventListeners() {
     const deleteForms = document.querySelectorAll('.delete-form');
