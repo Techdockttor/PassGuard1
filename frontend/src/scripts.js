@@ -175,7 +175,7 @@ async function fetchPasswords() {
     } catch (error) {
         console.error('Error fetching passwords:', error);
     }
-});
+}
 
 // Function to handle password change
 function handleChangePassword(event) {
