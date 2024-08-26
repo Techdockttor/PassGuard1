@@ -1,7 +1,7 @@
 # PassGuard
 
-PassGuard is a password manager application designed to securely store and manage user passwords. The app will provide functionalities such as password generation, encryption, and secure storage. Users will be able to access their stored passwords using a master password, ensuring that their credentials remain safe and easily accessible.
- Project was done by <a href="https://https://github.com/Techdockttor/" target="_blank">Diogu NkeJesus</a>, <a href="https://https://github.com/Melusi2022/" target="_blank"> Lindani Melusi Khumalo.</a> We made the Magic, We created a comprehensive application having functionality, quality, user experience & more.
+PassGuard is a password manager application designed to securely store and manage user passwords. The PassGuard API allows developers to interact with the PassGuard application, managing user accounts and securely storing and retrieving password entries. This API is built to ensure secure and efficient operations while providing a straightforward interface for clients.
+ Project was done by <a href="https://https://github.com/Techdockttor/" target="_blank">Diogu NkeJesus</a>, <a href="https://https://github.com/Melusi2022/" target="_blank"> Lindani Melusi Khumalo.</a>
 
 ### 🌟 Look at overview of web
 <p align="center"> 
