@@ -2,7 +2,6 @@
   "name": "passguard-app-1",
   "version": "1.0.0",
   "description": "PassGuard Application using Node.js, Express, and MongoDB",
-  "main": "",
   "scripts": {
     "start": "webpack serve --open",
     "build": "webpack"
