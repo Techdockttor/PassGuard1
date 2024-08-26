@@ -13,7 +13,6 @@ PassGuard is a password manager application designed to securely store and manag
 
 ## Technologies Used
 
-- **Frontend**: HTML, CSS, JavaScript
 - **Backend**: Node.js, Express
 - **Database**:  MongoDB
 - **Encryption**:  bcrypt, AES (Advanced Encryption Standard)
