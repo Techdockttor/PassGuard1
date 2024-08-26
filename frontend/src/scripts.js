@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-}
 
 // Function to delete password
 async function deletePassword(passwordId) {
@@ -82,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-}
 
 // DOMContentLoaded event for registration form
 document.addEventListener('DOMContentLoaded', () => {
@@ -110,7 +108,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-}
 
 // DOMContentLoaded event for password change form
 document.addEventListener('DOMContentLoaded', () => {
@@ -143,13 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-}
 
 // DOMContentLoaded event for fetching initial passwords
 document.addEventListener('DOMContentLoaded', () => {
     fetchPasswords();
 });
-}
 
 // Function to fetch passwords
 async function fetchPasswords() {
@@ -181,7 +176,6 @@ async function fetchPasswords() {
         console.error('Error fetching passwords:', error);
     }
 });
-}
 
 // Function to handle password change
 function handleChangePassword(event) {
@@ -193,8 +187,7 @@ function handleChangePassword(event) {
 
     if (newPassword !== confirmPassword) {
         alert('Passwords do not match!');
-        return;
-    }
+        return;}
 
     AJAX('/api/change-password', { email, newPassword }, 'POST')
         .then(response => {
@@ -209,8 +202,7 @@ function handleChangePassword(event) {
             console.error('Error:', error);
             alert('An error occurred while changing the password.');
         });
-}
-
+    
 // Function to attach delete event listeners
 function attachDeleteEventListeners() {
     const deleteForms = document.querySelectorAll('.delete-form');
