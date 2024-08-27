@@ -1,26 +1,12 @@
-// backend/routes/passwords.js
 const express = require('express');
-const createPassword = require('../controllers/passwords/createPassword');
-const getAllPasswords = require('../controllers/passwords/getAllPasswords');
-const deletePassword = require('../controllers/passwords/deletePassword');
-const updatePasswordStatus = require('../controllers/passwords/updatePasswordStatus');
-const { savePasswordToDatabase } = require('../controllers/passwords/passwordGenerator');
-
 const router = express.Router();
+const passwordManagement = require('../controllers/passwordManagement'); // Import the correct controller
 
-// Route to create a password
-router.post('/create', createPassword);
-
-// Route to get all passwords
-router.get('/', getAllPasswords);
-
-// Route to delete a password
-router.delete('/:id', deletePassword);
-
-// Route to update password status
-router.put('/:id/status', updatePasswordStatus);
-
-// Route to generate and save a password
-router.post('/generate', savePasswordToDatabase);
+// Define routes
+router.post('/passwords', passwordManagement.createPassword); // Ensure createPassword is a function
+router.get('/passwords', passwordManagement.getAllPasswords); // Ensure getAllPasswords is a function
+router.delete('/passwords/:id', passwordManagement.deletePassword); // Ensure deletePassword is a function
+router.put('/passwords/:id/status', passwordManagement.updatePasswordStatus); // Ensure updatePasswordStatus is a function
+router.post('/passwords/save', passwordManagement.savePasswordToDatabase); // Ensure savePasswordToDatabase is a function
 
 module.exports = router;

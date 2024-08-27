@@ -1,17 +1,24 @@
 const mongoose = require('mongoose');
 require('dotenv').config(); // Load environment variables from .env file
 
-// Set strictQuery to suppress the warning
+// StrictQuery to suppress the warning
 mongoose.set('strictQuery', true);
 
-// Enable Mongoose debugging in development mode only
+// Enable Mongoose debugging in development
 if (process.env.NODE_ENV === 'development') {
   mongoose.set('debug', true);
 }
 
-// Function to get Mongo URI from .env or fallback
+// Function to get Mongo URI from .env
 function getMongoURI() {
-  const mongoURI = process.env.MONGO_URI;
+  let mongoURI;
+
+  if (process.env.NODE_ENV === 'test') {
+    mongoURI = process.env.MONGO_URI_TEST;
+  } else {
+    mongoURI = process.env.MONGO_URI;
+  }
+
   console.log('MongoURI:', mongoURI);
   return mongoURI;
 }
@@ -24,7 +31,7 @@ async function connectDB() {
   try {
     await mongoose.connect(mongoURI, {
       useNewUrlParser: true, // Parses MongoDB connection string properly
-      useUnifiedTopology: true, // Unified topology for better server discovery and monitoring
+      useUnifiedTopology: true,
     });
     console.log('Connected to MongoDB');
   } catch (err) {
@@ -33,7 +40,7 @@ async function connectDB() {
   }
 }
 
-// Set up event listeners for the MongoDB connection
+// event listeners for the MongoDB connection
 const db = mongoose.connection;
 
 db.on('error', (err) => {
@@ -44,7 +51,7 @@ db.once('open', () => {
   console.log('MongoDB connection is open');
 });
 
-// Graceful Shutdown Handling for Database Disconnection
+// Shutdown Handling for Database Disconnection
 process.on('SIGINT', async () => {
   await mongoose.disconnect();
   console.log('MongoDB disconnected on app termination');

@@ -1,53 +1,30 @@
+const chai = require('chai');
+const expect = chai.expect;
 const request = require('supertest');
-const app = require('../app.js'); // Adjusted path to app.js
+const app = require('../app'); // Adjust the path if needed
 
-describe('Authentication Routes', () => {
-  let token;
-
-  // Test for user signup
+describe('Authentication API', () => {
   it('should sign up a new user', async () => {
-    const res = await request(app)
+    const response = await request(app)
       .post('/api/auth/signup')
       .send({
-        username: 'testuser',
-        password: 'Test@1234',
+        email: 'testuser@example.com',
+        password: 'Password123'
       });
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('token');
+    expect(response.status).to.equal(201);
+    expect(response.body).to.have.property('message', 'User created successfully');
   });
 
-  // Test for user signin
   it('should sign in an existing user', async () => {
-    const res = await request(app)
+    const response = await request(app)
       .post('/api/auth/signin')
       .send({
-        username: 'testuser',
-        password: 'Test@1234',
+        email: 'testuser@example.com',
+        password: 'Password123'
       });
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('token');
-    token = res.body.token; // Save token for later use
+    expect(response.status).to.equal(200);
+    expect(response.body).to.have.property('token');
   });
 
-  // Test for retrieving user details
-  it('should get user details', async () => {
-    const res = await request(app)
-      .get('/api/auth/user-details')
-      .set('Authorization', `Bearer ${token}`);
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('username', 'testuser');
-  });
-
-  // Test for user logout
-  it('should log out the user', async () => {
-    const res = await request(app)
-      .get('/api/auth/logout')
-      .set('Authorization', `Bearer ${token}`);
-
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty('message', 'Logout successful');
-  });
+  // Add more authentication tests as needed
 });

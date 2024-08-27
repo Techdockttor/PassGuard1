@@ -1,17 +1,16 @@
-// password.js
+// models/password.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const mongoURI = 'mongodb+srv://melusimedia:3nlHE6xqU0CZ7Ia9@passguardcluster.x33vxct.mongodb.net/?retryWrites=true&w=majority&appName=PassGuardCluster';
 
 const passwordSchema = new Schema({
-    title: { type: String, required: true },
-    description: { type: String, required: true },
-    start_date: { type: Date, required: true },
-    end_date: { type: Date, required: true },
-    generatedPassword: { type: String, required: true }, 
-	status: { type: String, enum: ['active', 'expired'], default: 'active'}
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  start_date: { type: Date, required: true },
+  end_date: { type: Date, required: true },
+  password: { type: String, required: true }, // Fixed: Changed from generatedPassword to password
+  status: { type: String, enum: ['active', 'expired'], default: 'active' }
 });
 
 const Password = mongoose.model('Password', passwordSchema);
 
-module.exports = Password
+module.exports = Password;

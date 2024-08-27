@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "app.js",
-    "test": "jest"
+    "dev": "nodemon app.js",
+    "test": "NODE_ENV=test mocha --require @babel/register --require tests/setup.js --timeout 10000 tests/**/*.test.js"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
@@ -16,17 +16,27 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-validator": "^7.2.0",
     "jsonwebtoken": "^9.0.2",
-    "mongod": "^2.0.0",
     "mongoose": "^7.8.0",
     "portfinder": "^1.0.32"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
+    "@babel/core": "^7.25.2",
+    "@babel/plugin-transform-runtime": "^7.25.4",
+    "@babel/preset-env": "^7.25.4",
+    "@babel/preset-react": "^7.24.7",
+    "@babel/register": "^7.24.6",
+    "chai": "^4.5.0",
+    "chai-http": "^4.3.0",
+    "esm": "^3.2.25",
+    "mocha": "^10.7.3",
+    "mongodb-memory-server": "^6.9.6",
     "nodemon": "^3.1.4",
+    "sinon": "^12.0.1",
     "supertest": "^6.3.4"
   },
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=16.20.1"
   }
 }
