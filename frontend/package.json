@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "PassGuard Application using Node.js, Express, and MongoDB",
   "scripts": {
+    "main": "scripts.js",
     "start": "webpack serve --open",
     "build": "webpack"
   },
