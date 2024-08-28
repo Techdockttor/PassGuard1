@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../../models/user'); // Correct relative path
+const User = require('../../models/user');
 
 const userSignIn = async (req, res) => {
   const { email, password } = req.body;

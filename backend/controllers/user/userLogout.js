@@ -1,11 +1,10 @@
-// backend/controllers/user/userLogout.js
-const User = require('../../models/user'); // Import User model
+const User = require('../../models/user'); // User Model
 
 const userLogout = async (req, res) => {
-  const { id } = req.user; // Assuming req.user is set after authentication
+  const { id } = req.user;
 
   try {
-    // Find the user by their ID
+    // Find the user with their ID
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

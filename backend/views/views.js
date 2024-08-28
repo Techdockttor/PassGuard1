@@ -1,6 +1,6 @@
 const express = require('express');
 const path = require('path');
-const authToken = require('./middleware/authToken'); // Import the authToken middleware
+const authToken = require('./middleware/authToken');
 
 const router = express.Router();
 
@@ -17,7 +17,7 @@ router.get('/profile', authToken, (req, res) => {
 // Logout route
 router.get('/logout', (req, res) => {
     res.clearCookie('token');
-    res.redirect('/'); // Redirect to the landing page after logout
+    res.redirect('/');
 });
 
 module.exports = router;

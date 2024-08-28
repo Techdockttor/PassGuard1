@@ -1,4 +1,3 @@
-// backend/controllers/passwords/deletePassword.js
 const Password = require('../../models/password');
 
 const deletePassword = async (req, res) => {

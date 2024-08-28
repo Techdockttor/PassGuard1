@@ -1,8 +1,5 @@
-// backend/controllers/passwordManagement.js
+const Password = require('../models/password');
 
-const Password = require('../models/password'); // Ensure your model is imported
-
-// Example implementation of generatePassword function
 const generatePassword = () => {
     const length = 12;
     const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -18,7 +15,7 @@ module.exports = {
     createPassword: async (req, res) => {
         try {
             const { title, description, start_date, end_date } = req.body;
-            const newPassword = new Password({ title, description, start_date, end_date });
+            const newPassword = new Password({ title, description, start_date, end_date, password: generatePassword() });
             await newPassword.save();
             res.status(201).json(newPassword);
         } catch (error) {
@@ -57,7 +54,7 @@ module.exports = {
             if (!password) {
                 return res.status(404).json({ message: 'Password not found' });
             }
-            password.status = status; // Adjust according to your schema
+            password.status = status; 
             await password.save();
             res.status(200).json({ message: 'Password status updated successfully' });
         } catch (error) {
@@ -74,7 +71,7 @@ module.exports = {
                 description,
                 start_date,
                 end_date,
-                generatedPassword
+                password: generatedPassword
             });
             await newPassword.save();
             res.status(201).json(newPassword);

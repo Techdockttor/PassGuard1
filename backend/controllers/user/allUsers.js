@@ -1,9 +1,8 @@
-// backend/controllers/user/allUsers.js
-const User = require('../../models/user'); // Import User model
+const User = require('../../models/user'); // User Model
 
 const allUsers = async (req, res) => {
   try {
-    // Retrieve all users, excluding passwords
+    // Retrieve all users
     const users = await User.find().select('-password');
     res.status(200).json(users);
   } catch (error) {

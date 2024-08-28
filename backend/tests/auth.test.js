@@ -7,7 +7,6 @@ const User = require('../models/user');
 
 describe('Authentication API', () => {
 
-  // Cleanup before each test
   beforeEach(async () => {
     await User.deleteMany({ email: 'testuser@example.com' });
   });
@@ -25,7 +24,7 @@ describe('Authentication API', () => {
   });
 
   it('should sign in an existing user', async () => {
-    // First, ensure the user is created
+    // Ensure the user is created
     await request(app)
       .post('/api/auth/signup')
       .send({

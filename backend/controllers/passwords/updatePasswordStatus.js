@@ -3,7 +3,7 @@ const Password = require('../../models/password');
 
 const updatePasswordStatus = async (req, res) => {
   const { id } = req.params;
-  const { status } = req.body; // Assuming status is passed in the request body
+  const { status } = req.body;
 
   try {
     const password = await Password.findById(id);
@@ -11,7 +11,7 @@ const updatePasswordStatus = async (req, res) => {
       return res.status(404).json({ message: 'Password not found' });
     }
 
-    password.status = status; // Update the status field
+    password.status = status;
     await password.save();
 
     res.status(200).json({ message: 'Password status updated successfully', data: password });

@@ -1,7 +1,7 @@
 const Password = require('../../models/password');
 const generatePassword = require('../../utils/generatePassword');
 
-const createPassword = async (req, res) => {
+const savePasswordToDatabase = async (req, res) => {
   try {
     const { noLetters, noNumbers, noSymbols, title, description, start_date, end_date } = req.body;
 
@@ -14,7 +14,7 @@ const createPassword = async (req, res) => {
       description,
       start_date,
       end_date,
-      password: generatedPassword, // Use the generated password
+      password: generatedPassword,
       status: 'active'
     });
 
@@ -30,4 +30,4 @@ const createPassword = async (req, res) => {
   }
 };
 
-module.exports = createPassword;
+module.exports = savePasswordToDatabase;

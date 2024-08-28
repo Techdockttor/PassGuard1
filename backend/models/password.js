@@ -1,4 +1,3 @@
-// models/password.js
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -7,7 +6,7 @@ const passwordSchema = new Schema({
   description: { type: String, required: true },
   start_date: { type: Date, required: true },
   end_date: { type: Date, required: true },
-  password: { type: String, required: true }, // Fixed: Changed from generatedPassword to password
+  password: { type: String, required: true },
   status: { type: String, enum: ['active', 'expired'], default: 'active' }
 });
 

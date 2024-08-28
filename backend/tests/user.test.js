@@ -1,11 +1,10 @@
 const request = require('supertest');
-const app = require('../app'); // Adjust path as needed
+const app = require('../app');
 
 describe('User Routes', function () {
   let token;
 
   before(async function () {
-    // Signup a user to get a token for authenticated routes
     const response = await request(app)
       .post('/api/auth/signup')
       .send({ username: 'testuser', password: 'testpassword' });
@@ -27,6 +26,4 @@ describe('User Routes', function () {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('token');
   });
-
-  // Additional tests
 });

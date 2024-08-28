@@ -4,10 +4,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
-const connectDB = require('./config/db'); // MongoDB connection
-const authRouter = require('./routes/auth'); // Authentication routes
-const userRouter = require('./routes/user'); // User routes
-const passwordRouter = require('./routes/passwords'); // Password management routes
+const connectDB = require('./config/db');
+const authRouter = require('./routes/auth');
+const userRouter = require('./routes/user'); 
+const passwordRouter = require('./routes/passwords');
 
 dotenv.config(); // Load environment variables
 
@@ -24,7 +24,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json()); // Parse JSON requests
 app.use(cookieParser()); // Parse cookies
-app.use(express.static(path.join(__dirname, '../public'))); // Serve static files
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Main Browser Page Routes
 app.get('/', (req, res) => {
@@ -48,9 +48,9 @@ app.get('/sign-in', (req, res) => {
 });
 
 // API Routes
-app.use('/api/auth', authRouter); // Authentication-related routes
-app.use('/api/user', userRouter); // User management routes
-app.use('/api/passwords', passwordRouter); // Password management routes
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter); 
+app.use('/api/passwords', passwordRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -73,4 +73,4 @@ connectDB()
     process.exit(1); // Exit Failure
   });
 
-module.exports = app; // App for testing purposes
+module.exports = app; // App for testing

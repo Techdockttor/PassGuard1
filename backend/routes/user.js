@@ -5,7 +5,7 @@ const userDetails = require('../controllers/user/userDetails');
 const userLogout = require('../controllers/user/userLogout');
 const allUsers = require('../controllers/user/allUsers');
 const updateUser = require('../controllers/user/updateUser');
-const { authToken } = require('../middleware/authMiddleware'); // Correct import for authToken
+const { authToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 

@@ -1,58 +1,96 @@
 const request = require('supertest');
-const app = require('../app'); // Adjust path as needed
+const app = require('../app');
+const Password = require('../models/password');
 
 describe('Password Management Routes', () => {
-  let token;
-  let passwordId;
-
-  before(async () => {
-    // Create a user and obtain a token for testing
-    const response = await request(app)
-      .post('/signin')
-      .send({ email: 'test@example.com', password: 'password123' });
-    token = response.body.token;
+  beforeEach(async () => {
+    await Password.deleteMany({});
   });
 
   it('should create a new password', async () => {
-    const response = await request(app)
+    const res = await request(app)
       .post('/passwords')
-      .set('Authorization', `Bearer ${token}`)
-      .send({ password: 'newpassword' });
-    passwordId = response.body._id;
-    expect(response.status).toBe(201);
-    expect(response.body).toHaveProperty('password');
+      .send({
+        title: 'Test Password',
+        description: 'This is a test password',
+        start_date: new Date(),
+        end_date: new Date(),
+        password: 'GeneratedPassword123!'
+      })
+      .expect('Content-Type', /json/)
+      .expect(201);
+
+    expect(res.body).toHaveProperty('_id');
+    expect(res.body.title).toBe('Test Password');
   });
 
   it('should get all passwords', async () => {
-    const response = await request(app)
+    await request(app)
+      .post('/passwords')
+      .send({
+        title: 'Test Password',
+        description: 'This is a test password',
+        start_date: new Date(),
+        end_date: new Date(),
+        password: 'GeneratedPassword123!'
+      });
+
+    const res = await request(app)
       .get('/passwords')
-      .set('Authorization', `Bearer ${token}`);
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body)).toBe(true);
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(res.body).toBeInstanceOf(Array);
+    expect(res.body.length).toBeGreaterThan(0);
   });
 
   it('should delete a password', async () => {
-    const response = await request(app)
-      .delete(`/passwords/${passwordId}`)
-      .set('Authorization', `Bearer ${token}`);
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('message', 'Password deleted successfully');
+    const password = await request(app)
+      .post('/passwords')
+      .send({
+        title: 'Test Password',
+        description: 'This is a test password',
+        start_date: new Date(),
+        end_date: new Date(),
+        password: 'GeneratedPassword123!'
+      });
+
+    await request(app)
+      .delete(`/passwords/${password.body._id}`)
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    await request(app)
+      .get(`/passwords/${password.body._id}`)
+      .expect(404);
   });
 
   it('should update the status of a password', async () => {
-    const response = await request(app)
-      .put(`/passwords/${passwordId}/status`)
-      .set('Authorization', `Bearer ${token}`)
-      .send({ status: 'updated' });
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('message', 'Password status updated');
+    const password = await request(app)
+      .post('/passwords')
+      .send({
+        title: 'Test Password',
+        description: 'This is a test password',
+        start_date: new Date(),
+        end_date: new Date(),
+        password: 'GeneratedPassword123!'
+      });
+
+    const res = await request(app)
+      .put(`/passwords/${password.body._id}/status`)
+      .send({ status: 'updated' })
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(res.body.status).toBe('updated');
   });
 
-  it('should generate a new password', async () => {
-    const response = await request(app)
+  it('should generate a new password and save it', async () => {
+    const res = await request(app)
       .post('/passwords/generate')
-      .set('Authorization', `Bearer ${token}`);
-    expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('password');
+      .expect('Content-Type', /json/)
+      .expect(200);
+
+    expect(res.body).toHaveProperty('password');
   });
 });
