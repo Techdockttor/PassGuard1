@@ -1,20 +1,27 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
-const { authToken } = require('../middleware/authMiddleware'); // Assuming you have an authentication middleware
-const userController = require('../controllers/userController');
+const { authToken } = require('../middleware/authMiddleware');
+
+// Import controllers
+const userSignUp = require('../controllers/user/userSignUp');
+const userSignIn = require('../controllers/user/userSignIn');
+const userDetails = require('../controllers/user/userDetails');
+const userLogout = require('../controllers/user/userLogout');
+const allUsers = require('../controllers/user/allUsers');
+const updateUser = require('../controllers/user/updateUser');
 const passwordController = require('../controllers/passwordController');
 
 const router = express.Router();
 
 // User Authentication Routes
-router.post('/signup', asyncHandler(userController.signup));
-router.post('/signin', asyncHandler(userController.signin));
-router.get('/user-details', authToken, asyncHandler(userController.getUserDetails));
-router.get('/userLogout', authToken, asyncHandler(userController.logout));
+router.post('/signup', asyncHandler(userSignUp));
+router.post('/signin', asyncHandler(userSignIn));
+router.get('/user-details/:id', authToken, asyncHandler(userDetails));
+router.post('/logout', authToken, asyncHandler(userLogout));
 
 // Admin Panel - User Management
-router.get('/all-user', authToken, asyncHandler(userController.getAllUsers));
-router.post('/update-user', authToken, asyncHandler(userController.updateUser));
+router.get('/all-user', authToken, asyncHandler(allUsers));
+router.put('/update-user/:id', authToken, asyncHandler(updateUser));
 
 // Password Management Routes
 router.post('/passwords', authToken, asyncHandler(passwordController.createPassword));

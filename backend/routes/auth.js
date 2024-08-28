@@ -1,187 +1,64 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/user'); // Ensure correct path to your User model
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const Password = require('../models/password');
-const { authToken } = require('../middleware/authMiddleware'); // Adjust the import to match the file path
-
-// Endpoint to retrieve and view username
-router.get('/fullname', (req, res) => {
-    const { username } = req.query; // Extract username from query parameters
-    res.json({ username });
-});
-
-// Endpoint to retrieve and view email
-router.get('/emailAddress', (req, res) => {
-    const { email } = req.query; // Extract email from query parameters
-    res.json({ email });
-});
-
-// Endpoint to retrieve and view generatedPassword
-router.get('/activePasscode', (req, res) => {
-    const { generatedPassword } = req.query; // Extract generatedPassword from query parameters
-    res.json({ generatedPassword });
-});
 
 // Signup route
 router.post('/signup', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, email, password } = req.body;
+    console.log('Signup request:', { username, email, password });
 
     try {
         // Check if user already exists
-        const existingUser = await User.findOne({ username });
+        const existingUser = await User.findOne({ email });
         if (existingUser) {
+            console.log('User already exists:', existingUser);
             return res.status(400).json({ error: 'User already exists' });
         }
 
         // Create new user
-        const hashedPassword = await bcrypt.hash(password, 10); // Hash password
-        const newUser = new User({ username, password: hashedPassword });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = new User({ username, email, password: hashedPassword });
         const savedUser = await newUser.save();
+        console.log('User created:', savedUser);
 
         // Generate JWT token
         const token = jwt.sign({ userId: savedUser._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-
-        res.json({ token });
+        res.status(201).json({ token });
     } catch (err) {
+        console.error('Signup error:', err);
         res.status(500).json({ message: err.message });
     }
 });
 
-// Login route
+// Signin route
 router.post('/signin', async (req, res) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
+    console.log('Signin request:', { email, password });
 
     try {
         // Find user
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ email });
         if (!user) {
+            console.log('User not found');
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
         // Check password
         const passwordMatch = await bcrypt.compare(password, user.password);
         if (!passwordMatch) {
+            console.log('Invalid password');
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 
         // Generate and return JWT token
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token });
+        res.status(200).json({ token });
     } catch (err) {
+        console.error('Signin error:', err);
         res.status(500).json({ message: err.message });
     }
-});
-
-// Change password
-router.post('/change-password', async (req, res) => {
-    try {
-        const { email, oldPassword, newPassword } = req.body;
-        // Check if user exists
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        // Check if old password is correct
-        const passwordMatch = await bcrypt.compare(oldPassword, user.password);
-        if (!passwordMatch) {
-            return res.status(401).json({ message: 'Invalid old password' });
-        }
-        // Hash the new password
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        // Update the password
-        user.password = hashedNewPassword;
-        await user.save();
-        res.status(200).json({ message: 'Password changed successfully' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// Logout route
-router.get('/logout', authToken, async (req, res) => {
-    // Logout logic can be implemented here if needed
-    res.status(200).json({ message: 'Logged out successfully' });
-});
-
-// User details route
-router.get('/user-details', authToken, async (req, res) => {
-    const { userId } = req.user; // Assuming userId is available in req.user
-    try {
-        const user = await User.findById(userId);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-        res.json({ username: user.username });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// Generate password
-router.post('/passwords', async (req, res) => {
-    try {
-        const { title, description, start_date, end_date } = req.body;
-
-        // Generate a password
-        const generatedPassword = generatePassword(); // Ensure this function is defined
-
-        const newPassword = new Password({
-            title,
-            description,
-            start_date,
-            end_date,
-            generatedPassword
-        });
-
-        await newPassword.save();
-        res.status(201).json(newPassword);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-// Retrieve all password entries
-router.get('/passwords', async (req, res) => {
-    try {
-        const passwords = await Password.find();
-        res.status(200).json(passwords);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
-
-// Delete password
-router.delete('/passwords/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
-        const password = await Password.findById(id);
-        if (!password) {
-            return res.status(404).json({ message: 'Password not found' });
-        }
-        await password.remove();
-        res.status(200).json({ message: 'Password deleted successfully' });
-    } catch (err) {
-        res.status(500).json({ message: err.message });
-    }
-});
-
-// Route to authenticate user (to be used as an example)
-router.post('/login', (req, res) => {
-    const { username, password } = req.body;
-
-    User.authenticate(username, password, (err, token) => {
-        if (err) {
-            return res.status(500).json({ error: 'Internal server error' });
-        }
-
-        if (token) {
-            return res.status(200).json({ token });
-        } else {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-    });
 });
 
 module.exports = router;
