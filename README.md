@@ -10,7 +10,7 @@ PassGuard is a password manager application designed to securely store and manag
 - **Encryption**:  bcrypt, AES (Advanced Encryption Standard)
 - **Version Control**:  Git and GitHub
 
-### 🌟 Overview of the Backend Architecture of PassGuard
+## 🌟 Overview of the Backend Architecture of PassGuard
 <p align=""> 
 	  The PassGuard backend is built using Node.js and Express, with MongoDB as the database. It handles password management and user authentication, ensuring security and scalability.
 
@@ -20,6 +20,10 @@ PassGuard is a password manager application designed to securely store and manag
 - **API Endpoints**: provide RESTful services for operations like user login and password management.
 - **Logging tracks key activities, and centralized error handling**: ensures robust security and performance.
 </p>
+
+### PassGuard API Documentation
+<a href="https://drive.google.com/file/d/1q3V_x6M1KWMEsEyuMgXsmx1PpdE05bkz/view?usp=drive_link">PassGuard</a>
+
 
 ## Installation
 
