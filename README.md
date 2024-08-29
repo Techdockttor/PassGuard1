@@ -16,26 +16,30 @@ PassGuard is a password manager application designed to securely store and manag
    ```bash
    git clone https://github.com/Techdockttor/PassGuard1.git
    ```
-1. Navigate to the project directory:
+2. Navigate to the project directory:
    ```bash
-   cd PassGuard
+   cd PassGuard1
    ```
-1. Install the required dependencies:
+3. Navigate to the project directory:
+   ```bash
+   cd backend
+   ```
+4. Install the required dependencies:
    ```bash
    npm install
    ```
    
 ## Development
 
-1. Run the application:
+5. Run the application:
    ```bash
 	npm start
    ```
-1. Open your web browser and visit ````
+6. Open your web browser and visit ````
 
 ## Production
 
-1. shut the application    
+7. shut the application    
 	```bash
 	Ctrl C
    ```
